@@ -4,7 +4,7 @@
 
 Built for the TeleAgriCulture Live Brief — ARTD2143 Creative Industries, Winchester School of Art 2025/26.
 
-AgriSense Commons takes raw sensor data from TeleAgriCulture boards, classifies it using interpretable machine learning, projects growing conditions using OpenWeatherMap forecast data; detecting anomalies in real time and surfacing everything through a plain HTML dashboard and REST API.
+AgriSense takes raw sensor data from TeleAgriCulture boards, classifies it using interpretable machine learning, projects growing conditions using OpenWeatherMap forecast data; detecting anomalies in real time and surfacing everything through a plain HTML dashboard and REST API.
 
 ---
 
@@ -50,8 +50,8 @@ agrisense/
 ### Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/agrisense-commons.git
-cd agrisense-commons
+git clone https://github.com/YOUR_USERNAME/agrisense.git
+cd agrisense
 
 python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
