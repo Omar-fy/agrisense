@@ -1,10 +1,10 @@
-# AgriSense Commons
+# AgriSense
 
 **Intelligent insight pipeline for TeleAgriCulture sensor boards**
 
 Built for the TeleAgriCulture Live Brief — ARTD2143 Creative Industries, Winchester School of Art 2025/26.
 
-AgriSense Commons takes raw sensor data from TeleAgriCulture ESP32-S3 boards, classifies it using interpretable machine learning, projects 5-day growing conditions using OpenWeatherMap forecast data, detects anomalies in real time, and surfaces everything through a plain HTML dashboard and REST API.
+AgriSense Commons takes raw sensor data from TeleAgriCulture boards, classifies it using interpretable machine learning, projects growing conditions using OpenWeatherMap forecast data; detecting anomalies in real time and surfacing everything through a plain HTML dashboard and REST API.
 
 ---
 
@@ -256,9 +256,7 @@ Without an OWM key the forecast tab returns an error but all other features work
 
 ## Partner context
 
-- **Partner:** [TeleAgriCulture](https://teleagriculture.org) — open IoT sensing platform
-- **Workshop partner:** [V2_ Lab for the Unstable Media](https://v2.nl), Rotterdam
-- **Hardware:** TeleAgriCulture Board V2.1 (ESP32-S3)
+- **Hardware:** TeleAgriCulture Board V2.1
 - **Demo board:** Kit 1001, Schmiede festival, Salzburg 2019
 - **Original notebook:** TeleAgriCulture_Schmiede.ipynb (pipeline.py is a full refactor of this)
 
