@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Database — contains real sensor data, do not commit
+agrisense.db
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Node (if frontend tooling added later)
+node_modules/

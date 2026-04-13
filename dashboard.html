@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriSense Commons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #0c100d;
+      --bg2:     #121812;
+      --bg3:     #172017;
+      --border:  #243024;
+      --border2: #344534;
+      --text:    #d4e4d4;
+      --text2:   #8a9e8b;
+      --text3:   #526053;
+      --accent:  #5aab5a;
+      --accent2: #3a7a3a;
+      --warm:    #d4885a;
+      --cool:    #5a8ad4;
+      --danger:  #d45a5a;
+      --serif:   'DM Serif Display', Georgia, serif;
+      --mono:    'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 { font-family: var(--serif); font-size: 20px; font-weight: 400; }
+    header p  { font-size: 10px; color: var(--text3); letter-spacing: 0.06em; margin-top: 2px; }
+
+    #status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--border2); display: inline-block;
+      margin-right: 6px; transition: background 0.3s;
+    }
+    #status-dot.live   { background: var(--accent); }
+    #status-dot.error  { background: var(--danger); }
+
+    .query-bar {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 10px; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    input, select, button {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 7px 10px;
+      outline: none;
+    }
+
+    select { cursor: pointer; }
+
+    button {
+      background: var(--accent2);
+      border-color: var(--accent);
+      cursor: pointer;
+      letter-spacing: 0.04em;
+    }
+    button:disabled { background: var(--bg3); border-color: var(--border); color: var(--text3); cursor: not-allowed; }
+
+    .tabs {
+      display: flex;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text3);
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      border-radius: 0;
+    }
+    .tab-btn.active { border-bottom-color: var(--accent); color: var(--text); }
+
+    main { padding: 24px 28px; max-width: 1100px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-label {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .big-value { font-family: var(--serif); font-size: 48px; line-height: 1; letter-spacing: -0.02em; }
+    .big-unit  { font-family: var(--serif); font-size: 20px; color: var(--text3); margin-left: 4px; }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .meta-row span:first-child { color: var(--text3); }
+
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .state-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    .dist-bar-track {
+      display: flex;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      gap: 1px;
+      margin-top: 6px;
+    }
+
+    .summary-box {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent2);
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text2);
+      font-style: italic;
+    }
+
+    .forecast-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .day-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      flex: 1 1 130px;
+      min-width: 120px;
+      animation: fadeUp 0.3s ease both;
+    }
+    .day-card.alert { background: #1e0e0e; border-color: var(--danger); }
+
+    .alert-row {
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      animation: fadeUp 0.25s ease both;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text3);
+    }
+    .empty-state .serif { font-family: var(--serif); font-size: 34px; font-style: italic; margin-bottom: 12px; }
+
+    .error-box {
+      padding: 12px 16px;
+      border-radius: 6px;
+      background: #1e0808;
+      border: 1px solid var(--danger);
+      color: #e88;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    details summary {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      list-style: none;
+    }
+    details pre {
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--text2);
+      line-height: 1.7;
+      overflow: auto;
+      max-height: 240px;
+    }
+
+    footer {
+      padding: 12px 28px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text3);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .hidden { display: none; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>AgriSense Commons</h1>
+    <p>TeleAgriCulture · Forecast &amp; Alert Intelligence</p>
+  </div>
+  <div style="display:flex;align-items:center;font-size:11px;color:var(--text3)">
+    <span id="status-dot"></span>
+    <span id="status-text">idle</span>
+  </div>
+</header>
+
+<div class="query-bar">
+  <div class="field">
+    <label>Kit ID</label>
+    <input id="kit-id" value="1001" style="width:90px" placeholder="1001" />
+  </div>
+  <div class="field">
+    <label>Lat</label>
+    <input id="lat" value="47.7981" style="width:90px" />
+  </div>
+  <div class="field">
+    <label>Lon</label>
+    <input id="lon" value="13.0456" style="width:90px" />
+  </div>
+  <div class="field">
+    <label>Sensor</label>
+    <select id="sensor">
+      <option value="ftTemp">Temperature</option>
+      <option value="ftHumid">Humidity</option>
+      <option value="ftSoilMoist">Soil Moisture</option>
+      <option value="ftMoisture">Soil Moisture (alt)</option>
+      <option value="ftLight">Light</option>
+      <option value="ftTDS">Nutrients (TDS)</option>
+      <option value="ftSoilTemp">Soil Temp</option>
+      <option value="ftPressure">Pressure</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>&nbsp;</label>
+    <button id="run-btn" onclick="runPipeline()">Run pipeline</button>
+  </div>
+  <span id="timestamp" style="font-size:11px;color:var(--text3);align-self:center;margin-left:auto"></span>
+</div>
+
+<div class="tabs hidden" id="tabs">
+  <button class="tab-btn active" onclick="switchTab('insights', this)">Insights</button>
+  <button class="tab-btn" onclick="switchTab('forecast', this)">Forecast</button>
+  <button class="tab-btn" id="alerts-tab-btn" onclick="switchTab('alerts', this)">Alerts</button>
+</div>
+
+<main>
+  <div id="error-area"></div>
+
+  <div id="empty-state" class="empty-state">
+    <div class="serif">Enter a Kit ID</div>
+    <div style="font-size:13px;line-height:1.8">
+      Try <span style="color:var(--accent);font-family:var(--mono)">1001</span> — the Schmiede demo board
+      <br>Lat <span style="color:var(--text2)">47.7981</span> · Lon <span style="color:var(--text2)">13.0456</span> (Salzburg)
+    </div>
+  </div>
+
+  <!-- Insights tab -->
+  <div id="tab-insights" class="hidden">
+    <div class="grid">
+      <div class="card" id="insight-card"></div>
+      <div class="card" id="profile-card"></div>
+    </div>
+  </div>
+
+  <!-- Forecast tab -->
+  <div id="tab-forecast" class="hidden">
+    <div class="card" id="forecast-card"></div>
+  </div>
+
+  <!-- Alerts tab -->
+  <div id="tab-alerts" class="hidden">
+    <div class="card" id="alerts-card"></div>
+  </div>
+</main>
+
+<footer>
+  <span>AgriSense Commons · TeleAgriCulture</span>
+  <span>Schmiede board: Kit 1001 · Salzburg, Austria</span>
+</footer>
+
+<script>
+  const API = 'http://localhost:8000'
+
+  const STATE_STYLES = {
+    optimal:       { color: '#5aab5a', bg: '#0e2210' },
+    heat_stress:   { color: '#d4885a', bg: '#2a1608' },
+    cold_stress:   { color: '#5a8ad4', bg: '#081422' },
+    cool:          { color: '#7aaed4', bg: '#0a1620' },
+    drought_risk:  { color: '#d45a5a', bg: '#2a0808' },
+    humidity_risk: { color: '#5ad4d4', bg: '#082222' },
+    waterlogged:   { color: '#5a6ed4', bg: '#080e2a' },
+    moderate:      { color: '#a08ad4', bg: '#140e2a' },
+    nutrient_low:  { color: '#d4d45a', bg: '#22220a' },
+    nutrient_high: { color: '#d4885a', bg: '#2a1408' },
+    unknown:       { color: '#526053', bg: '#141814' },
+  }
+
+  const SENSOR_UNITS = {
+    ftTemp: '°C', ftHumid: '%', ftSoilMoist: '%', ftMoisture: '%',
+    ftLight: ' lux', ftTDS: ' ppm', ftSoilTemp: '°C', ftPressure: ' hPa',
+  }
+
+  let alertInterval = null
+  let currentKitId  = null
+  let currentSensor = null
+  let alertCount    = 0
+
+  // ── Helpers ──────────────────────────────────────────────────────────────────
+
+  function stateBadge(state) {
+    const s = STATE_STYLES[state] || STATE_STYLES.unknown
+    const label = (state || 'unknown').replace(/_/g, ' ')
+    return `<span class="state-badge" style="background:${s.bg};color:${s.color};border:1px solid ${s.color}28">
+      <span class="state-dot" style="background:${s.color}"></span>${label}
+    </span>`
+  }
+
+  function distBar(distribution) {
+    if (!distribution || !Object.keys(distribution).length) return ''
+    const entries = Object.entries(distribution).sort((a, b) => b[1] - a[1])
+    const bars = entries.map(([s, pct]) => {
+      const c = (STATE_STYLES[s] || STATE_STYLES.unknown).color
+      return `<div title="${s.replace(/_/g,' ')}: ${pct}%" style="width:${pct}%;background:${c};opacity:0.7;height:100%"></div>`
+    }).join('')
+    const legend = entries.map(([s, pct]) => {
+      const c = (STATE_STYLES[s] || STATE_STYLES.unknown).color
+      return `<span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">
+        <span style="width:7px;height:7px;border-radius:2px;background:${c}"></span>
+        ${s.replace(/_/g,' ')} ${pct}%
+      </span>`
+    }).join('')
+    return `
+      <div style="margin-top:14px">
+        <div class="section-label">Time in state</div>
+        <div class="dist-bar-track">${bars}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:7px">${legend}</div>
+      </div>`
+  }
+
+  function peerBar(comparison) {
+    if (!comparison?.available) return ''
+    const pct   = comparison.percentile ?? 50
+    const color = pct > 70 ? 'var(--warm)' : pct < 30 ? 'var(--cool)' : 'var(--accent)'
+    return `
+      <div style="margin-top:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <div class="section-label" style="margin:0">Peer percentile</div>
+          <span style="font-size:11px;color:var(--text3)">${comparison.peer_count} boards</span>
+        </div>
+        <div style="position:relative;background:var(--bg3);border-radius:3px;height:6px">
+          <div style="width:${pct}%;height:100%;border-radius:3px;background:${color}"></div>
+          <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%,-50%);
+            width:12px;height:12px;border-radius:50%;background:${color};border:2px solid var(--bg)"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-top:6px">${comparison.note}</div>
+      </div>`
+  }
+
+  function setStatus(state) {
+    const dot  = document.getElementById('status-dot')
+    const text = document.getElementById('status-text')
+    dot.className = state
+    text.textContent = state === 'live' ? `Kit ${currentKitId} · live`
+                     : state === 'error' ? 'error' : 'idle'
+  }
+
+  function showError(msg) {
+    document.getElementById('error-area').innerHTML =
+      `<div class="error-box">${msg}</div>`
+  }
+
+  function clearError() {
+    document.getElementById('error-area').innerHTML = ''
+  }
+
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'))
+    document.getElementById(`tab-${name}`).classList.remove('hidden')
+  }
+
+  // ── Main pipeline call ────────────────────────────────────────────────────────
+
+  async function runPipeline() {
+    const kitId  = document.getElementById('kit-id').value.trim()
+    const sensor = document.getElementById('sensor').value
+    const lat    = document.getElementById('lat').value
+    const lon    = document.getElementById('lon').value
+
+    if (!kitId) return
+
+    currentKitId  = kitId
+    currentSensor = sensor
+
+    document.getElementById('run-btn').disabled = true
+    document.getElementById('run-btn').textContent = 'Fetching…'
+    document.getElementById('empty-state').classList.add('hidden')
+    document.getElementById('tabs').classList.add('hidden')
+    clearError()
+
+    try {
+      const params = new URLSearchParams({ sensor_name: sensor, lat, lon })
+
+      // Fire insights and forecast in parallel
+      const [insRes, fcRes] = await Promise.all([
+        fetch(`${API}/kit/${kitId}/insights?${params}`),
+        fetch(`${API}/kit/${kitId}/forecast?${params}`),
+      ])
+
+      const ins = await insRes.json()
+      if (!insRes.ok) throw new Error(ins.detail || `HTTP ${insRes.status}`)
+
+      const fc = fcRes.ok ? await fcRes.json() : null
+
+      renderInsights(ins, sensor)
+      renderForecast(fc, sensor)
+      renderAlerts([])
+
+      document.getElementById('tabs').classList.remove('hidden')
+      document.getElementById('tab-insights').classList.remove('hidden')
+      document.getElementById('tab-forecast').classList.remove('hidden')
+      document.getElementById('tab-alerts').classList.remove('hidden')
+
+      // Switch to insights tab
+      document.querySelectorAll('.tab-btn')[0].click()
+
+      document.getElementById('timestamp').textContent =
+        new Date(ins.processed_at).toLocaleTimeString('en-GB') + ' UTC'
+
+      setStatus('live')
+      startAlertPolling(kitId, sensor)
+
+    } catch (e) {
+      showError(e.message)
+      setStatus('error')
+    } finally {
+      document.getElementById('run-btn').disabled = false
+      document.getElementById('run-btn').textContent = 'Run pipeline'
+    }
+  }
+
+  // ── Render functions ──────────────────────────────────────────────────────────
+
+  function renderInsights(data, sensor) {
+    const unit = SENSOR_UNITS[sensor] || ''
+    const mean = data.board_profile?.mean
+    const delta = data.deviation?.delta
+
+    document.getElementById('insight-card').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+        <span class="section-label" style="margin:0">Current conditions</span>
+        ${stateBadge(data.current_state)}
+      </div>
+      <div style="margin-bottom:4px">
+        <span class="big-value">${mean != null ? Number(mean).toFixed(1) : '—'}</span>
+        <span class="big-unit">${unit}</span>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:16px">
+        mean across ${(data.record_count||0).toLocaleString()} readings
+        · ${(data.date_from||'').slice(0,10)} → ${(data.date_to||'').slice(0,10)}
+        ${data.source === 'database' ? '· <span style="color:var(--accent)">from local DB</span>' : ''}
+      </div>
+      ${distBar(data.state_distribution)}
+      ${peerBar(data.peer_comparison)}
+      ${data.deviation?.available ? `
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+          <div class="section-label">vs outdoor (${data.deviation.owm_location})</div>
+          <span style="font-size:22px;color:${delta>2?'var(--warm)':delta<-2?'var(--cool)':'var(--accent)'}">
+            ${delta>0?'+':''}${Number(delta).toFixed(1)}${unit}
+          </span>
+          <span style="font-size:11px;color:var(--text3);margin-left:10px">
+            outdoor: ${data.deviation.owm_temp}${unit} · ${data.deviation.owm_desc}
+          </span>
+        </div>` : ''}
+      ${data.summary ? `<div class="summary-box">${data.summary}</div>` : ''}
+      ${data.decision_rules ? `
+        <details>
+          <summary>Decision tree rules</summary>
+          <pre>${data.decision_rules}</pre>
+        </details>` : ''}
+    `
+
+    document.getElementById('profile-card').innerHTML = `
+      <div class="section-label">Board profile</div>
+      ${[
+        ['Kit ID', `#${data.kit_id}`],
+        ['Sensor', data.sensor_name],
+        ['Records', (data.record_count||0).toLocaleString()],
+        ['Mean', `${data.board_profile?.mean} ${unit}`],
+        ['Std dev', data.board_profile?.std],
+        ['25th pct', data.board_profile?.p25],
+        ['75th pct', data.board_profile?.p75],
+        ['Date from', (data.date_from||'').slice(0,10)],
+        ['Date to', (data.date_to||'').slice(0,10)],
+      ].map(([l, v]) => `
+        <div class="meta-row">
+          <span>${l}</span>
+          <span style="color:var(--text2)">${v ?? '—'}</span>
+        </div>`).join('')}
+      ${data.recent_anomalies?.length ? `
+        <div class="section-label" style="margin-top:18px">
+          Recent anomalies (${data.recent_anomalies.length})
+        </div>
+        ${data.recent_anomalies.slice(0,5).map(a => `
+          <div class="meta-row">
+            <span>${(a.state||'anomaly').replace(/_/g,' ')} · ${a.value}${unit}</span>
+            <span style="color:var(--text3)">z=${a.z_score}</span>
+          </div>`).join('')}` : ''}
+    `
+  }
+
+  function renderForecast(data, sensor) {
+    const unit = SENSOR_UNITS[sensor] || ''
+    const card = document.getElementById('forecast-card')
+
+    if (!data) {
+      card.innerHTML = `
+        <div class="section-label">5-day forecast</div>
+        <div style="font-size:12px;color:var(--danger);padding:10px 0">
+          Add OWM_API_KEY to backend/.env to enable forecasts.
+        </div>`
+      return
+    }
+
+    const alertDays = (data.forecast || []).filter(d => d.alert)
+    const banner = alertDays.length
+      ? `<div style="padding:8px 12px;margin-bottom:14px;background:#1e0808;border:1px solid var(--danger);border-radius:6px;font-size:12px;color:#e88">
+           ⚠ ${data.forecast_summary}
+         </div>`
+      : `<div style="padding:8px 12px;margin-bottom:14px;background:#0a1a0a;border:1px solid var(--accent2);border-radius:6px;font-size:12px;color:var(--text2)">
+           ${data.forecast_summary}
+         </div>`
+
+    const days = (data.forecast || []).map((day, i) => `
+      <div class="day-card ${day.alert ? 'alert' : ''}" style="animation-delay:${i*0.05}s">
+        <div style="font-size:11px;color:${day.alert?'var(--danger)':'var(--text3)'};margin-bottom:6px">
+          ${new Date(day.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
+        </div>
+        ${stateBadge(day.projected_state)}
+        <div style="margin-top:10px">
+          <div style="font-family:var(--serif);font-size:26px;line-height:1">${day.indoor_mean}${unit}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px">
+            ${day.indoor_low}–${day.indoor_high}${unit} projected
+          </div>
+          <div style="font-size:11px;color:var(--text3)">${day.outdoor_mean}${unit} outdoor · ${day.humidity_mean}% RH</div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:${day.alert?'#e88':'var(--text2)'};line-height:1.5">
+          ${day.recommendation}
+        </div>
+      </div>`).join('')
+
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div class="section-label" style="margin:0">5-day indoor forecast</div>
+        ${data.indoor_outdoor_delta != null
+          ? `<span style="font-size:11px;color:var(--text3)">Δ ${data.indoor_outdoor_delta>0?'+':''}${data.indoor_outdoor_delta}${unit} learned delta</span>`
+          : ''}
+      </div>
+      ${banner}
+      <div class="forecast-grid">${days}</div>
+      ${data.current_outdoor?.temp_c != null
+        ? `<div style="margin-top:12px;font-size:11px;color:var(--text3)">
+             Current outdoor: ${data.current_outdoor.temp_c}${unit} · ${data.current_outdoor.description} · ${data.current_outdoor.location}
+           </div>` : ''}
+    `
+  }
+
+  function renderAlerts(alerts) {
+    alertCount = alerts.length
+    document.getElementById('alerts-tab-btn').textContent =
+      `Alerts${alertCount ? ` (${alertCount})` : ''}`
+
+    const SEV = {
+      high:   { color: '#e86060', bg: '#2a0808', border: '#6a1010' },
+      medium: { color: '#d4a85a', bg: '#1e1408', border: '#5a3808' },
+    }
+
+    const rows = alerts.map((a, i) => {
+      const s = SEV[a.severity] || SEV.medium
+      return `<div class="alert-row" style="background:${s.bg};border:1px solid ${s.border};animation-delay:${i*0.04}s">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:11px;font-weight:500;color:${s.color};text-transform:uppercase;letter-spacing:0.05em">
+            ${(a.state||'').replace(/_/g,' ')} · ${a.severity}
+          </span>
+          <span style="font-size:10px;color:var(--text3)">
+            ${new Date(a.timestamp).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
+          </span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5">${a.description}</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:5px">
+          ${a.value}${a.unit} · z=${a.z_score} · ${a.triggered_by}
+        </div>
+      </div>`
+    }).join('')
+
+    document.getElementById('alerts-card').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div class="section-label" style="margin:0">Alert feed</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="checkAlerts()" style="font-size:11px;padding:4px 10px;background:none;border-color:var(--border2);color:var(--text2)">
+            Check now
+          </button>
+          ${alerts.length ? `<button onclick="clearAlerts()" style="font-size:11px;padding:4px 10px;background:none;border-color:var(--border);color:var(--text3)">Clear</button>` : ''}
+        </div>
+      </div>
+      ${alerts.length === 0
+        ? `<div style="text-align:center;padding:24px 0;color:var(--text3);font-size:12px">
+             No alerts. Polling every 60 seconds.
+           </div>`
+        : rows}
+      <div style="font-size:10px;color:var(--text3);margin-top:8px;text-align:right">Auto-polling every 60s</div>
+    `
+  }
+
+  // ── Alert polling ─────────────────────────────────────────────────────────────
+
+  async function checkAlerts() {
+    if (!currentKitId) return
+    try {
+      await fetch(`${API}/kit/${currentKitId}/alerts/check?sensor_name=${currentSensor}`, { method: 'POST' })
+      const r = await fetch(`${API}/kit/${currentKitId}/alerts?sensor_name=${currentSensor}`)
+      if (r.ok) {
+        const d = await r.json()
+        renderAlerts(d.alerts || [])
+      }
+    } catch (e) { console.error('Alert check failed:', e) }
+  }
+
+  async function clearAlerts() {
+    if (!currentKitId) return
+    await fetch(`${API}/kit/${currentKitId}/alerts?sensor_name=${currentSensor}`, { method: 'DELETE' })
+    renderAlerts([])
+  }
+
+  function startAlertPolling(kitId, sensor) {
+    if (alertInterval) clearInterval(alertInterval)
+    alertInterval = setInterval(checkAlerts, 60_000)
+  }
+
+  // Run on Enter key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') runPipeline()
+  })
+</script>
+</body>
+</html>
