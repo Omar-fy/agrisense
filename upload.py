@@ -1,5 +1,5 @@
 """
-AgriSense Commons — Cache and Upload Layer
+AgriSense — Cache and Upload Layer
 ============================================
 Addresses the feedback: boards need to upload data to the TeleAgriCulture
 SQL/PHP server for wider scientific use, not just store locally.
