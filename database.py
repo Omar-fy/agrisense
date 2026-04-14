@@ -1,5 +1,5 @@
 """
-AgriSense Commons — Database Layer
+AgriSense — Database Layer
 =====================================
 SQLite storage for multi-board sensor readings and profiles.
 
