@@ -1,5 +1,5 @@
 """
-AgriSense Commons — Board Discovery
+AgriSense — Board Discovery
 ======================================
 Discovers all public TeleAgriCulture boards by probing the API.
 
