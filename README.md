@@ -28,11 +28,11 @@ agrisense/
 ├── pipeline/
 │   ├── pipeline.py       Core ML pipeline (18 functions)
 │   └── __init__.py
-├── main.py               FastAPI backend — all API endpoints
+├── main.py               FastAPI backend; has all API endpoints
 ├── database.py           SQLite storage layer
 ├── discovery.py          Automatic board discovery
 ├── upload.py             WiFi handshake and upload-to-TeleAgriCulture layer
-├── dashboard.html        Plain HTML/JS frontend (no framework, no build step)
+├── dashboard.html        Plain HTML/JS frontend (Rudimentary front to prototype with, the project is part of a team effort and will be merged with a more presentable UI)
 ├── requirements.txt
 └── .env.example
 ```
