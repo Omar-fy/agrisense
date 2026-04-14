@@ -51,8 +51,8 @@ agrisense/
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/agrisense.git
-or
-Just download the zip from the repo
+
+# Or just download the zip from the repo
 
 cd agrisense
 
@@ -76,14 +76,14 @@ API docs available at: **http://localhost:8000/docs**
 ### Open the dashboard (prototype)
 
 ```bash
-# Option 1 — Python built-in server (recommended)
+# Option 1 — Python built-in server (recommended and always worked)
 python3 -m http.server 8080
 # then open http://localhost:8080/dashboard.html
 
-# Option 2 — VS Code Live Server
+# Option 2 — VS Code Live Server (some hiccups that may be hardware limitations .. will rectify)
 # Right-click dashboard.html → Open with Live Server
 
-# Option 3 — open directly in browser (may have cors issues but still working on them)
+# Option 3 — open directly in browser (may have CORS issues but still working on them)
 open dashboard.html
 ```
 
