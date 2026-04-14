@@ -1,5 +1,5 @@
 """
-AgriSense Commons v2 — FastAPI Backend (Multi-Board Edition)
+AgriSense v2 — FastAPI Backend (Multi-Board Edition)
 =============================================================
 Run: uvicorn main:app --reload --port 8000
 
