@@ -2,7 +2,7 @@
 
 **Intelligent insight pipeline for TeleAgriCulture sensor boards**
 
-Built for the TeleAgriCulture Live Brief — ARTD2143 Creative Industries, Winchester School of Art 2025/26.
+Built for the TeleAgriCulture Live Brief ARTD2143 Module.
 
 AgriSense takes raw sensor data from TeleAgriCulture boards, classifies it using interpretable machine learning, projects growing conditions using OpenWeatherMap forecast data; detecting anomalies in real time and surfacing everything through a plain HTML dashboard and REST API.
 
@@ -11,7 +11,7 @@ AgriSense takes raw sensor data from TeleAgriCulture boards, classifies it using
 ## What it does
 
 - **Pulls** sensor readings from the TeleAgriCulture API for any Kit ID
-- **Classifies** each time window into an agronomic state (optimal, heat stress, drought risk, etc.) using a shallow Decision Tree (max depth 4 — fully human-readable)
+- **Classifies** each time window into an agronomic state (optimal, heat stress, drought risk, etc.) using a shallow Decision Tree (max depth 4)
 - **Detects anomalies** using a rolling z-score against the board's learned baseline
 - **Forecasts** 5-day indoor conditions using the board's learned indoor/outdoor temperature delta and OpenWeatherMap data
 - **Benchmarks** boards against each other using peer statistical profiles
@@ -51,6 +51,9 @@ agrisense/
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/agrisense.git
+or
+Just download the zip from the repo
+
 cd agrisense
 
 python3 -m venv venv
@@ -70,7 +73,7 @@ uvicorn main:app --reload --port 8000
 
 API docs available at: **http://localhost:8000/docs**
 
-### Open the dashboard
+### Open the dashboard (prototype)
 
 ```bash
 # Option 1 — Python built-in server (recommended)
@@ -80,7 +83,7 @@ python3 -m http.server 8080
 # Option 2 — VS Code Live Server
 # Right-click dashboard.html → Open with Live Server
 
-# Option 3 — open directly in browser (may have CORS issues)
+# Option 3 — open directly in browser (may have cors issues but still working on them)
 open dashboard.html
 ```
 
@@ -238,7 +241,7 @@ TeleAgriCulture API / Board WiFi AP
 
 `dashboard.html` is a single self-contained file — no npm, no build step. Open it in any browser or serve it with a static file server. It connects to the FastAPI backend at `http://localhost:8000`.
 
-The frontend is plain HTML/CSS/JS to match the team's existing stack. If your team is using a different frontend framework, all endpoints return standard JSON and work with any HTTP client.
+The frontend is plain HTML/CSS/JS and could be trasnformed into standard JSON to work with any HTTP client and/or a React frontend.
 
 ---
 
