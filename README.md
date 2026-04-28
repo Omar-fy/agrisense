@@ -181,17 +181,13 @@ curl "http://localhost:8000/upload/queue/YOUR_KIT_ID?sensor_name=ftTemp"
 ```
 TeleAgriCulture API / Board WiFi AP
           │
-          ▼
   fetch_sensor_data()     Paginated API fetch with cursor handling
           │
-          ▼
   clean()                 Drop nulls, physical bounds, dedup timestamps
   calibrate_soil_moisture() Convert raw ADC → 0-100% if needed
           │
-          ▼
   featurise()             Lagged features + rolling stats (from Schmiede notebook)
           │
-          ▼
   build_classifier()      Decision Tree max_depth=4 — interpretable rules
   classify_windows()      Label each time window with agronomic state
           │
@@ -199,10 +195,8 @@ TeleAgriCulture API / Board WiFi AP
           ├── compute_deviation()    Board mean vs OWM outdoor baseline
           ├── compare_to_peers()     Cross-board percentile benchmarking
           │
-          ▼
   generate_summary()      Plain-language insight for non-technical users
           │
-          ▼
   FastAPI → dashboard.html
 ```
 
@@ -225,13 +219,12 @@ TeleAgriCulture API / Board WiFi AP
 ```
 [Board collects readings on-device / SD card]
           │
-          ▼ (connect to board WiFi AP)
+          (connect to board WiFi AP)
 [AgriSense handshake pull → local SQLite cache]
           │
-          ▼ (back on internet)
+          (back on internet)
 [AgriSense upload flush → kits.teleagriculture.org SQL/PHP database]
           │
-          ▼
 [TeleAgriCulture platform — available for wider scientific use]
 ```
 
@@ -239,9 +232,9 @@ TeleAgriCulture API / Board WiFi AP
 
 ## Frontend
 
-`dashboard.html` is a single self-contained file — no npm, no build step. Open it in any browser or serve it with a static file server. It connects to the FastAPI backend at `http://localhost:8000`.
+`dashboard.html` is a single self-contained file. Open it in any browser or serve it with a static file server. It connects to the FastAPI backend at `http://localhost:8000`.
 
-The frontend is plain HTML/CSS/JS and could be trasnformed into standard JSON to work with any HTTP client and/or a React frontend.
+The frontend is plain HTML/CSS/JS and could be trasnformed into standard JSON to work with any HTTP client and/or a React frontend which I will be discussing with my team on.
 
 ---
 
