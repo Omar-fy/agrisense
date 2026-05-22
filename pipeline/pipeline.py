@@ -31,6 +31,8 @@ Sensor naming: ftTemp, ftHumid, ftSoilMoist, ftMoisture, ftTDS, ftLight, ftPress
 
 import requests
 import pandas as pd
+import json
+import os
 import numpy as np
 from datetime import datetime, timezone
 from typing import Optional
@@ -38,9 +40,9 @@ from sklearn.tree import DecisionTreeClassifier, export_text
 from sklearn.preprocessing import LabelEncoder
 
 
-
+# ─────────────────────────────────────────────────────────────
 # CONSTANTS
-
+# ─────────────────────────────────────────────────────────────
 
 TELEAGRI_BASE    = "https://kits.teleagriculture.org/api/kits"
 OWM_CURRENT_URL  = "https://api.openweathermap.org/data/2.5/weather"
